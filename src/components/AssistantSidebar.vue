@@ -11,19 +11,19 @@
       <h3 class="section-title">Actions rapides</h3>
       <div class="action-buttons">
         <button class="action-btn" @click="selectAction('grammar')">
-          <span class="action-icon">📚</span>
+          <MaterialIcon name="school" size="small" />
           <span class="action-text">Grammaire</span>
         </button>
         <button class="action-btn" @click="selectAction('phrases')">
-          <span class="action-icon">🔗</span>
+          <MaterialIcon name="link" size="small" />
           <span class="action-text">Construction de phrases</span>
         </button>
         <button class="action-btn" @click="selectAction('translation')">
-          <span class="action-icon">🔄</span>
+          <MaterialIcon name="translate" size="small" />
           <span class="action-text">Traduction</span>
         </button>
         <button class="action-btn" @click="selectAction('definitions')">
-          <span class="action-icon">📖</span>
+          <MaterialIcon name="menu_book" size="small" />
           <span class="action-text">Définitions</span>
         </button>
       </div>
@@ -34,21 +34,21 @@
       <h3 class="section-title">Conversations récentes</h3>
       <div class="conversation-list">
         <div class="conversation-item" @click="selectConversation('new')">
-          <div class="conversation-icon">💬</div>
+          <MaterialIcon name="chat" size="small" color="var(--accent-primary)" />
           <div class="conversation-content">
             <div class="conversation-title">Nouvelle conversation</div>
             <div class="conversation-subtitle">Commencez à discuter</div>
           </div>
         </div>
         <div class="conversation-item" @click="selectConversation('grammar')">
-          <div class="conversation-icon">📚</div>
+          <MaterialIcon name="school" size="small" color="var(--accent-primary)" />
           <div class="conversation-content">
             <div class="conversation-title">Grammaire bambara</div>
             <div class="conversation-time">Il y a 2h</div>
           </div>
         </div>
         <div class="conversation-item" @click="selectConversation('phrases')">
-          <div class="conversation-icon">🔗</div>
+          <MaterialIcon name="link" size="small" color="var(--accent-primary)" />
           <div class="conversation-content">
             <div class="conversation-title">Construction de phrases</div>
             <div class="conversation-time">Il y a 1j</div>
@@ -60,6 +60,8 @@
 </template>
 
 <script setup lang="ts">
+import MaterialIcon from './MaterialIcon.vue'
+
 const emit = defineEmits<{
   selectAction: [action: string]
   selectConversation: [conversation: string]
@@ -145,7 +147,7 @@ const selectConversation = (conversation: string) => {
 }
 
 .action-icon {
-  font-size: 1.2rem;
+  margin-right: 0.5rem;
 }
 
 .action-text {

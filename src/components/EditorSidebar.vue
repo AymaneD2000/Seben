@@ -41,22 +41,22 @@
       
       <div class="quick-actions">
         <button class="action-btn" @click="checkGrammar">
-          <span class="action-icon">🔍</span>
+          <MaterialIcon name="search" size="small" />
           <span class="action-text">Vérifier la grammaire</span>
         </button>
         
         <button class="action-btn" @click="translateToFrench">
-          <span class="action-icon">🔄</span>
+          <MaterialIcon name="translate" size="small" />
           <span class="action-text">Traduire en français</span>
         </button>
         
         <button class="action-btn" @click="explainWords">
-          <span class="action-icon">📖</span>
+          <MaterialIcon name="menu_book" size="small" />
           <span class="action-text">Expliquer les mots</span>
         </button>
         
         <button class="action-btn" @click="checkPronunciation">
-          <span class="action-icon">🔊</span>
+          <MaterialIcon name="volume_up" size="small" />
           <span class="action-text">Prononciation</span>
         </button>
       </div>
@@ -73,8 +73,18 @@
           :class="['chat-message', message.sender === 'user' ? 'user-message' : 'ai-message']"
         >
           <div class="message-avatar">
-            <span v-if="message.sender === 'ai'">🤖</span>
-            <span v-else>👤</span>
+            <MaterialIcon 
+              v-if="message.sender === 'ai'" 
+              name="support_agent" 
+              size="small" 
+              color="var(--accent-primary)" 
+            />
+            <MaterialIcon 
+              v-else 
+              name="account_circle" 
+              size="small" 
+              color="var(--text-secondary)" 
+            />
           </div>
           <div class="message-content">
             <p class="message-text">{{ message.text }}</p>
@@ -91,7 +101,7 @@
           class="chat-input"
         />
         <button class="chat-send" @click="sendMessage" :disabled="!newMessage.trim()">
-          ➤
+          <MaterialIcon name="send" size="small" />
         </button>
       </div>
       
@@ -107,6 +117,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick } from 'vue'
+import MaterialIcon from './MaterialIcon.vue'
 
 interface Suggestion {
   id: number

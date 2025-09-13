@@ -1,0 +1,37 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .seben-text {
+        font-family: 'Brush Script MT', cursive, sans-serif;
+        font-weight: bold;
+        font-size: 48px;
+        fill: #ffffff;
+        stroke: none;
+        letter-spacing: 2px;
+      }
+      .seben-s { font-size: 52px; }
+      .seben-n { font-size: 52px; }
+      .seben-epsilon { font-size: 44px; }
+      .seben-b { font-size: 48px; }
+      .seben-exclamation { font-size: 48px; }
+    </style>
+  </defs>
+  
+  <!-- S -->
+  <text x="10" y="45" class="seben-text seben-s">S</text>
+  
+  <!-- ε (epsilon) -->
+  <text x="45" y="45" class="seben-text seben-epsilon">ε</text>
+  
+  <!-- B -->
+  <text x="75" y="45" class="seben-text seben-b">B</text>
+  
+  <!-- ε (epsilon) -->
+  <text x="105" y="45" class="seben-text seben-epsilon">ε</text>
+  
+  <!-- N -->
+  <text x="135" y="45" class="seben-text seben-n">N</text>
+  
+  <!-- ! -->
+  <text x="170" y="45" class="seben-text seben-exclamation">!</text>
+</svg>

@@ -6,28 +6,29 @@
         <div class="footer-section">
           <h3 class="footer-title">Seben</h3>
           <p class="footer-description">
-            Le dictionnaire intelligent de la langue bambara
+            {{ t.footer.description }}
           </p>
         </div>
         
         <!-- Functionalities -->
         <div class="footer-section">
-          <h4 class="footer-heading">Fonctionnalités</h4>
+          <h4 class="footer-heading">{{ t.footer.functionalities }}</h4>
           <ul class="footer-links">
-            <li><a href="#" class="footer-link">Dictionnaire</a></li>
-            <li><a href="#" class="footer-link">Grammaire</a></li>
-            <li><a href="#" class="footer-link">Traduction</a></li>
-            <li><a href="#" class="footer-link">Assistant IA</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.dictionary }}</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.grammar }}</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.assistant }}</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.editor }}</a></li>
           </ul>
         </div>
         
-        <!-- Support -->
+        <!-- Model Suite -->
         <div class="footer-section">
-          <h4 class="footer-heading">Support</h4>
+          <h4 class="footer-heading">{{ t.footer.modelSuite }}</h4>
           <ul class="footer-links">
-            <li><a href="#" class="footer-link">Aide</a></li>
-            <li><a href="#" class="footer-link">Contact</a></li>
-            <li><a href="#" class="footer-link">À propos</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.models }}</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.api }}</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.documentation }}</a></li>
+            <li><a href="#" class="footer-link">{{ t.footer.links.developers }}</a></li>
           </ul>
         </div>
       </div>
@@ -37,13 +38,21 @@
         <div class="footer-divider"></div>
         <div class="footer-bottom-content">
           <p class="copyright">
-            © 2024 Seben. Tous droits réservés.
+            {{ t.footer.copyright }}
           </p>
           <div class="social-links">
-            <a href="#" class="social-link" title="Facebook">📘</a>
-            <a href="#" class="social-link" title="Twitter">🐦</a>
-            <a href="#" class="social-link" title="LinkedIn">💼</a>
-            <a href="#" class="social-link" title="YouTube">📺</a>
+            <a href="#" class="social-link" title="Facebook">
+              <MaterialIcon name="facebook" size="small" />
+            </a>
+            <a href="#" class="social-link" title="Twitter">
+              <MaterialIcon name="alternate_email" size="small" />
+            </a>
+            <a href="#" class="social-link" title="LinkedIn">
+              <MaterialIcon name="work" size="small" />
+            </a>
+            <a href="#" class="social-link" title="YouTube">
+              <MaterialIcon name="play_circle" size="small" />
+            </a>
           </div>
         </div>
       </div>
@@ -52,7 +61,12 @@
 </template>
 
 <script setup lang="ts">
-// No script needed for this component
+import MaterialIcon from './MaterialIcon.vue'
+import { useI18nStore } from '@/stores/i18n'
+import { storeToRefs } from 'pinia'
+
+const i18nStore = useI18nStore()
+const { t } = storeToRefs(i18nStore)
 </script>
 
 <style scoped>
@@ -146,12 +160,13 @@
   background-color: var(--bg-tertiary);
   border-radius: 50%;
   text-decoration: none;
-  font-size: 1.2rem;
+  color: var(--text-secondary);
   transition: all 0.3s ease;
 }
 
 .social-link:hover {
   background-color: var(--accent-primary);
+  color: white;
   transform: translateY(-2px);
 }
 
@@ -184,7 +199,6 @@
   .social-link {
     width: 2rem;
     height: 2rem;
-    font-size: 1rem;
   }
 }
 

@@ -3,13 +3,13 @@
     <!-- File Operations -->
     <div class="toolbar-group">
       <button class="toolbar-btn" title="Nouveau document" @click="newDocument">
-        📄
+        <MaterialIcon name="note_add" size="small" />
       </button>
       <button class="toolbar-btn" title="Télécharger" @click="downloadDocument">
-        ⬇️
+        <MaterialIcon name="download" size="small" />
       </button>
       <button class="toolbar-btn" title="Imprimer" @click="printDocument">
-        🖨️
+        <MaterialIcon name="print" size="small" />
       </button>
     </div>
 
@@ -48,10 +48,10 @@
     <!-- List Formatting -->
     <div class="toolbar-group">
       <button class="toolbar-btn" title="Liste à puces" @click="insertList('ul')">
-        ≡
+        <MaterialIcon name="format_list_bulleted" size="small" />
       </button>
       <button class="toolbar-btn" title="Liste numérotée" @click="insertList('ol')">
-        ≡
+        <MaterialIcon name="format_list_numbered" size="small" />
       </button>
     </div>
 
@@ -65,7 +65,7 @@
     <!-- Settings -->
     <div class="toolbar-group ml-auto">
       <button class="toolbar-btn" title="Paramètres" @click="openSettings">
-        ⚙️
+        <MaterialIcon name="settings" size="small" />
       </button>
     </div>
   </div>
@@ -73,6 +73,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import MaterialIcon from './MaterialIcon.vue'
 
 const formatStates = ref({
   bold: false,

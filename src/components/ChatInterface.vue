@@ -11,10 +11,10 @@
       </div>
       <div class="chat-actions">
         <button class="header-btn" title="Nouvelle conversation">
-          ➕
+          <MaterialIcon name="add" size="small" />
         </button>
         <button class="header-btn" title="Paramètres">
-          ⚙️
+          <MaterialIcon name="settings" size="small" />
         </button>
       </div>
     </div>
@@ -27,8 +27,18 @@
         :class="['message', message.sender === 'user' ? 'user-message' : 'assistant-message']"
       >
         <div class="message-avatar">
-          <span v-if="message.sender === 'assistant'">🤖</span>
-          <span v-else>👤</span>
+          <MaterialIcon 
+            v-if="message.sender === 'assistant'" 
+            name="support_agent" 
+            size="medium" 
+            color="var(--accent-primary)" 
+          />
+          <MaterialIcon 
+            v-else 
+            name="account_circle" 
+            size="medium" 
+            color="var(--text-secondary)" 
+          />
         </div>
         <div class="message-content">
           <div class="message-header">
@@ -57,7 +67,7 @@
       <!-- Typing indicator -->
       <div v-if="isTyping" class="message assistant-message typing-message">
         <div class="message-avatar">
-          <span>🤖</span>
+          <MaterialIcon name="support_agent" size="medium" color="var(--accent-primary)" />
         </div>
         <div class="message-content">
           <div class="typing-indicator">
@@ -73,10 +83,10 @@
     <div class="input-area">
       <div class="input-container">
         <button class="input-btn" title="Joindre un fichier">
-          📎
+          <MaterialIcon name="attach_file" size="medium" />
         </button>
         <button class="input-btn" title="Enregistrement vocal">
-          <img src="@/assets/microphone_icon.png" alt="Microphone" class="input-icon" />
+          <MaterialIcon name="mic" size="medium" />
         </button>
         <input 
           v-model="newMessage"
@@ -90,7 +100,7 @@
           :disabled="!newMessage.trim()"
           class="send-btn"
         >
-          ➤
+          <MaterialIcon name="send" size="medium" />
         </button>
       </div>
       <div class="input-footer">
@@ -102,6 +112,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
+import MaterialIcon from './MaterialIcon.vue'
 
 interface MessageExample {
   bambara: string
@@ -120,7 +131,7 @@ const messages = ref<Message[]>([
   {
     id: 1,
     sender: 'assistant',
-    text: 'I ni sogoma ! (Bonjour !)<br><br>N ye i ka nnamaya ye bambara kan na. N be se ka i deme ni :<br><br>🔸 Kanuya (Les règles de grammaire)<br>🔸 Focogo (La construction de phrases)<br>🔸 Daɲɛgafe (Les définitions de mots)<br>🔸 Kanuya (Les traductions)<br>🔸 Sinjɛta (Les explications culturelles)<br><br><em>Ne be i deme cogo di ?</em> (Comment puis-je vous aider ?)',
+    text: 'I ni sogoma ! (Bonjour !)<br><br>N ye i ka nnamaya ye bambara kan na. N be se ka i deme ni :<br><br>• Kanuya (Les règles de grammaire)<br>• Focogo (La construction de phrases)<br>• Daɲɛgafe (Les définitions de mots)<br>• Kanuya (Les traductions)<br>• Sinjɛta (Les explications culturelles)<br><br><em>Ne be i deme cogo di ?</em> (Comment puis-je vous aider ?)',
     time: 'Maintenant'
   }
 ])

@@ -28,12 +28,15 @@
     <!-- Status Bar -->
     <div class="editor-status-bar">
       <div class="status-left">
-        <span class="language-indicator">🌍 Bambara</span>
+        <span class="language-indicator">
+          <MaterialIcon name="language" size="small" />
+          Bambara
+        </span>
         <span class="encoding-indicator">UTF-8</span>
       </div>
       <div class="status-right">
         <button class="voice-input-btn" @click="toggleVoiceInput" :class="{ active: isRecording }">
-          <img src="@/assets/microphone_icon.png" alt="Voice Input" class="voice-icon" />
+          <MaterialIcon name="mic" size="small" />
           <span v-if="isRecording">Enregistrement...</span>
           <span v-else>Prêt</span>
         </button>
@@ -44,6 +47,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
+import MaterialIcon from './MaterialIcon.vue'
 
 const content = ref('I ni sogoma !')
 const editorTextarea = ref<HTMLTextAreaElement>()
@@ -253,7 +257,7 @@ watch(content, () => {
   outline: none;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Georgia', 'Times New Roman', serif;
+  font-family: var(--font-family);
   font-size: 1.125rem;
   line-height: 1.8;
   resize: none;

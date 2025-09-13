@@ -3,13 +3,14 @@
     <div class="container">
       <div class="hero-content">
         <div class="hero-text">
+          <div class="hero-logo">
+            <AppLogo size="large" />
+          </div>
           <h1 class="hero-title">
-            Découvrez les<br>
-            <span class="highlight">langues nationales</span>
+            {{ t.hero.title }}
           </h1>
           <p class="hero-subtitle">
-            Le premier dictionnaire intelligent et assistant de grammaire<br>
-            pour les langues nationales du Mali
+            {{ t.hero.subtitle }}
           </p>
           
           <!-- Search Bar -->
@@ -17,15 +18,15 @@
             <div class="search-bar">
               <input 
                 type="text" 
-                placeholder="I be fen daw fe? (Que cherchez-vous?)"
+                :placeholder="t.hero.searchPlaceholder"
                 v-model="searchQuery"
                 class="search-input"
               />
               <button class="voice-button" title="Recherche vocale">
-                <img src="@/assets/microphone_icon.png" alt="Microphone" class="button-icon" />
+                <MaterialIcon name="mic" size="medium" />
               </button>
               <button class="search-button" @click="performSearch">
-                <img src="@/assets/search_icon.png" alt="Search" class="button-icon" />
+                <MaterialIcon name="search" size="medium" />
               </button>
             </div>
           </div>
@@ -34,15 +35,15 @@
           <div class="stats-container">
             <div class="stat-item">
               <div class="stat-number">10,000+</div>
-              <div class="stat-label">Mots</div>
+              <div class="stat-label">{{ t.hero.stats.words }}</div>
             </div>
             <div class="stat-item">
               <div class="stat-number">500+</div>
-              <div class="stat-label">Phrases</div>
+              <div class="stat-label">{{ t.hero.stats.phrases }}</div>
             </div>
             <div class="stat-item">
               <div class="stat-number">15</div>
-              <div class="stat-label">Langues locales</div>
+              <div class="stat-label">{{ t.hero.stats.languages }}</div>
             </div>
           </div>
         </div>
@@ -58,6 +59,13 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import AppLogo from './AppLogo.vue'
+import MaterialIcon from './MaterialIcon.vue'
+import { useI18nStore } from '@/stores/i18n'
+import { storeToRefs } from 'pinia'
+
+const i18nStore = useI18nStore()
+const { t } = storeToRefs(i18nStore)
 
 const searchQuery = ref('')
 
@@ -83,6 +91,12 @@ const performSearch = () => {
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
+}
+
+.hero-logo {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
 .hero-title {

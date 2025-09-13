@@ -20,14 +20,19 @@ const router = createRouter({
       component: () => import('../views/AssistantView.vue'),
     },
     {
-      path: '/traduction',
-      name: 'translation',
-      component: () => import('../views/TranslationView.vue'),
-    },
-    {
       path: '/editeur',
       name: 'editor',
       component: () => import('../views/EditorView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/LoginView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
     },
     {
       path: '/about',

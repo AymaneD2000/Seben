@@ -1,46 +1,60 @@
 <template>
-  <div class="editor-view">
-    <AppHeader />
-    
-    <!-- Editor Toolbar -->
-    <EditorToolbar 
-      :word-count="documentStats.words"
-      :character-count="documentStats.characters"
-      :language="'Bambara'"
-      @new-document="handleNewDocument"
-      @download-document="handleDownloadDocument"
-      @print-document="handlePrintDocument"
-      @toggle-format="handleToggleFormat"
-      @insert-list="handleInsertList"
-      @open-settings="handleOpenSettings"
-    />
-    
-    <!-- Main Editor Layout -->
-    <div class="editor-layout">
-      <!-- Main Text Editor -->
-      <main class="editor-main">
-        <TextEditor 
-          ref="textEditor"
-          @content-changed="handleContentChanged"
-          @cursor-position-changed="handleCursorPositionChanged"
-        />
-      </main>
+  <DashboardLayout>
+    <div class="editor-view">
+      <h1>Éditeur de Texte Bambara</h1>
+      <p>Écrivez et éditez vos textes en bambara avec l'assistance de l'IA</p>
       
-      <!-- AI Assistant Sidebar -->
-      <EditorSidebar 
-        @apply-suggestion="handleApplySuggestion"
-        @check-grammar="handleCheckGrammar"
-        @translate-to-french="handleTranslateToFrench"
-        @explain-words="handleExplainWords"
-        @check-pronunciation="handleCheckPronunciation"
-      />
+      <div class="editor-layout">
+        <!-- Editor Sidebar -->
+        <aside class="editor-sidebar">
+          <EditorSidebar 
+            @apply-suggestion="handleApplySuggestion"
+            @check-grammar="handleCheckGrammar"
+            @translate-to-french="handleTranslateToFrench"
+            @explain-words="handleExplainWords"
+            @check-pronunciation="handleCheckPronunciation"
+          />
+        </aside>
+        
+        <!-- Main Editor Area -->
+        <main class="editor-main">
+          <div class="content-container">
+            <!-- Editor Toolbar -->
+            <div class="toolbar-section">
+              <h2>Barre d'outils de l'éditeur :</h2>
+              <EditorToolbar 
+                :word-count="documentStats.words"
+                :character-count="documentStats.characters"
+                :language="'Bambara'"
+                @new-document="handleNewDocument"
+                @download-document="handleDownloadDocument"
+                @print-document="handlePrintDocument"
+                @toggle-format="handleToggleFormat"
+                @insert-list="handleInsertList"
+                @open-settings="handleOpenSettings"
+              />
+            </div>
+            
+            <!-- Text Editor -->
+            <div class="editor-section">
+              <h2>Éditeur de texte :</h2>
+              <TextEditor 
+                ref="textEditor"
+                @content-changed="handleContentChanged"
+                @cursor-position-changed="handleCursorPositionChanged"
+              />
+            </div>
+          </div>
+        </main>
+      </div>
+      
     </div>
-  </div>
+  </DashboardLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import AppHeader from '@/components/AppHeader.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import EditorToolbar from '@/components/EditorToolbar.vue'
 import TextEditor from '@/components/TextEditor.vue'
 import EditorSidebar from '@/components/EditorSidebar.vue'
@@ -71,10 +85,17 @@ const documentStats = reactive<DocumentStats>({
   characters: 0,
   lines: 1
 })
-const cursorPosition = reactive<CursorPosition>({
-  line: 1,
-  column: 1
-})
+
+// Content and cursor tracking
+const handleContentChanged = (content: string, stats: DocumentStats) => {
+  documentStats.words = stats.words
+  documentStats.characters = stats.characters
+  documentStats.lines = stats.lines
+}
+
+const handleCursorPositionChanged = (position: CursorPosition) => {
+  console.log('Position curseur:', position)
+}
 
 // Document operations
 const handleNewDocument = () => {
@@ -87,78 +108,23 @@ const handleNewDocument = () => {
 }
 
 const handleDownloadDocument = () => {
-  if (!textEditor.value) return
-  
-  const content = textEditor.value.content
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'document-bambara.txt'
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  
-  URL.revokeObjectURL(url)
+  console.log('Télécharger document')
 }
 
 const handlePrintDocument = () => {
-  if (!textEditor.value) return
-  
-  const content = textEditor.value.content
-  const printWindow = window.open('', '_blank')
-  
-  if (printWindow) {
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Document Bambara</title>
-          <style>
-            body { font-family: Georgia, serif; line-height: 1.8; padding: 2rem; }
-            h1 { color: #333; margin-bottom: 2rem; }
-          </style>
-        </head>
-        <body>
-          <h1>Document Bambara</h1>
-          <pre style="white-space: pre-wrap; font-family: Georgia, serif;">${content}</pre>
-        </body>
-      </html>
-    `)
-    printWindow.document.close()
-    printWindow.print()
-  }
+  console.log('Imprimer document')
 }
 
-// Text formatting
 const handleToggleFormat = (format: string) => {
-  if (textEditor.value) {
-    textEditor.value.formatText(format)
-  }
+  console.log('Format:', format)
 }
 
 const handleInsertList = (type: string) => {
-  if (!textEditor.value) return
-  
-  const listItem = type === 'ul' ? '• ' : '1. '
-  textEditor.value.insertText('\n' + listItem)
+  console.log('Liste:', type)
 }
 
 const handleOpenSettings = () => {
-  console.log('Opening settings...')
-  // Settings modal would open here
-}
-
-// Content and cursor tracking
-const handleContentChanged = (content: string, stats: DocumentStats) => {
-  documentStats.words = stats.words
-  documentStats.characters = stats.characters
-  documentStats.lines = stats.lines
-}
-
-const handleCursorPositionChanged = (position: CursorPosition) => {
-  cursorPosition.line = position.line
-  cursorPosition.column = position.column
+  console.log('Paramètres')
 }
 
 // AI Assistant actions
@@ -207,33 +173,101 @@ const handleCheckPronunciation = () => {
 .editor-view {
   min-height: 100vh;
   background-color: var(--bg-primary);
-  display: flex;
-  flex-direction: column;
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  margin-left: 280px; /* Space for AppSidebar */
 }
 
 .editor-layout {
   display: flex;
-  flex: 1;
-  height: calc(100vh - 140px); /* Account for header and toolbar */
+  position: relative;
+  margin-left: 280px; /* Space for AppSidebar */
+}
+
+.editor-sidebar {
+  width: 280px; /* Same width as AppSidebar */
+  background-color: var(--card-bg);
+  border-right: 1px solid var(--border-color);
+  height: 100vh;
+  position: fixed;
+  left: 280px; /* Position after AppSidebar */
+  top: 0;
+  overflow-y: auto;
+  z-index: 100;
 }
 
 .editor-main {
   flex: 1;
+  margin-left: 280px; /* Space for EditorSidebar */
+  height: 100vh;
+  width: calc(100% - 280px);
+  max-width: none;
+  padding-right: 0; /* Remove right padding to extend to sidebar */
+}
+
+.content-container {
+  padding: 2rem 0 2rem 2rem; /* Remove right padding to extend to sidebar */
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Prevent flex item from growing beyond container */
+  gap: 2rem;
+}
+
+.toolbar-section {
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background-color: var(--card-bg);
+  margin-right: 0; /* Extend to sidebar */
+}
+
+.editor-section {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background-color: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+  margin-right: 0; /* Extend to sidebar */
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .editor-view {
+    margin-left: 0;
+  }
+  
   .editor-layout {
+    margin-left: 0;
     flex-direction: column;
+  }
+  
+  .editor-sidebar {
+    position: relative;
+    left: 0;
+    width: 100%;
     height: auto;
-    min-height: calc(100vh - 120px);
+    max-height: 50vh;
+    overflow-y: auto;
   }
   
   .editor-main {
-    min-height: 60vh;
+    margin-left: 0;
+    height: auto;
+    width: 100%;
+  }
+  
+  .content-container {
+    padding: 1rem;
+    height: auto;
+  }
+  
+  .toolbar-section,
+  .editor-section {
+    margin-right: 0;
   }
 }
+
 </style>

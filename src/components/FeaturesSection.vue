@@ -7,7 +7,7 @@
         <!-- Row 1 -->
         <div class="feature-card">
           <div class="feature-icon">
-            <div class="icon-placeholder">📖</div>
+            <MaterialIcon name="menu_book" size="large" color="var(--accent-primary)" />
           </div>
           <h3 class="feature-title">Dictionnaire intelligent</h3>
           <p class="feature-description">
@@ -15,19 +15,10 @@
           </p>
         </div>
         
-        <div class="feature-card">
-          <div class="feature-icon">
-            <div class="icon-placeholder">🎯</div>
-          </div>
-          <h3 class="feature-title">Recherche avancée</h3>
-          <p class="feature-description">
-            Trouvez rapidement les mots que vous cherchez avec notre système de recherche intelligent et suggestions automatiques.
-          </p>
-        </div>
         
         <div class="feature-card">
           <div class="feature-icon">
-            <div class="icon-placeholder">🤖</div>
+            <MaterialIcon name="support_agent" size="large" color="var(--accent-primary)" />
           </div>
           <h3 class="feature-title">Assistant IA intégré</h3>
           <p class="feature-description">
@@ -38,7 +29,7 @@
         <!-- Row 2 -->
         <div class="feature-card">
           <div class="feature-icon">
-            <div class="icon-placeholder">✍️</div>
+            <MaterialIcon name="edit" size="large" color="var(--accent-primary)" />
           </div>
           <h3 class="feature-title">Éditeur de texte</h3>
           <p class="feature-description">
@@ -46,19 +37,10 @@
           </p>
         </div>
         
-        <div class="feature-card">
-          <div class="feature-icon">
-            <div class="icon-placeholder">🔄</div>
-          </div>
-          <h3 class="feature-title">Traduction multilingue</h3>
-          <p class="feature-description">
-            Traduisez instantanément entre le français, le bambara et les autres langues nationales du Mali.
-          </p>
-        </div>
         
         <div class="feature-card">
           <div class="feature-icon">
-            <div class="icon-placeholder">📚</div>
+            <MaterialIcon name="school" size="large" color="var(--accent-primary)" />
           </div>
           <h3 class="feature-title">Grammaire interactive</h3>
           <p class="feature-description">
@@ -71,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-// No script needed for this component
+import MaterialIcon from './MaterialIcon.vue'
 </script>
 
 <style scoped>
@@ -90,9 +72,9 @@
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 

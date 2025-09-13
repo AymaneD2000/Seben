@@ -36,11 +36,11 @@
     
     <div class="action-buttons">
       <button class="action-btn listen-btn">
-        <span class="btn-icon">🔊</span>
+        <MaterialIcon name="volume_up" size="small" />
         Écouter
       </button>
       <button class="action-btn save-btn">
-        <span class="btn-icon">💾</span>
+        <MaterialIcon name="save" size="small" />
         Sauvegarder
       </button>
     </div>
@@ -48,6 +48,8 @@
 </template>
 
 <script setup lang="ts">
+import MaterialIcon from './MaterialIcon.vue'
+
 interface WordExample {
   bambara: string
   french: string

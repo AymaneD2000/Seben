@@ -1,42 +1,44 @@
 <template>
-  <div class="dictionary-view">
-    <AppHeader />
-    
-    <div class="dictionary-layout">
-      <!-- Sidebar -->
-      <DictionarySidebar @select-word="selectWord" />
-      
-      <!-- Main Content -->
-      <main class="dictionary-main">
-        <div class="content-container">
-          <!-- Search Interface -->
-          <DictionarySearch 
-            v-if="currentView === 'search'"
-            @search="performSearch"
-          />
-          
-          <!-- Search Results -->
-          <SearchResults 
-            v-if="currentView === 'results'"
-            :results="searchResults"
-            @select-word="selectWord"
-          />
-          
-          <!-- Single Word Definition -->
-          <WordDefinition 
-            v-if="currentView === 'word' && selectedWordData"
-            :word="selectedWordData"
-            @select-word="selectWord"
-          />
-        </div>
-      </main>
+  <DashboardLayout>
+    <div class="dictionary-view">
+      <div class="dictionary-layout">
+        <!-- Dictionary Sidebar -->
+        <aside class="dictionary-sidebar">
+          <DictionarySidebar @select-word="selectWord" />
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="dictionary-main">
+          <div class="content-container">
+            <!-- Search Interface -->
+            <DictionarySearch 
+              v-if="currentView === 'search'"
+              @search="performSearch"
+            />
+            
+            <!-- Search Results -->
+            <SearchResults 
+              v-if="currentView === 'results'"
+              :results="searchResults"
+              @select-word="selectWord"
+            />
+            
+            <!-- Single Word Definition -->
+            <WordDefinition 
+              v-if="currentView === 'word' && selectedWordData"
+              :word="selectedWordData"
+              @select-word="selectWord"
+            />
+          </div>
+        </main>
+      </div>
     </div>
-  </div>
+  </DashboardLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import AppHeader from '@/components/AppHeader.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DictionarySidebar from '@/components/DictionarySidebar.vue'
 import DictionarySearch from '@/components/DictionarySearch.vue'
 import SearchResults from '@/components/SearchResults.vue'
@@ -183,24 +185,81 @@ const performSearch = (query: string, category: string) => {
 .dictionary-layout {
   display: flex;
   position: relative;
+  margin-left: 280px; /* Space for AppSidebar - same for both states */
+}
+
+.dictionary-sidebar {
+  width: 300px;
+  background-color: var(--card-bg);
+  border-right: 1px solid var(--border-color);
+  height: 100vh;
+  position: fixed;
+  left: 280px; /* Position after AppSidebar */
+  top: 0;
+  overflow-y: auto;
+  z-index: 100;
 }
 
 .dictionary-main {
   flex: 1;
-  margin-left: 280px;
-  min-height: calc(100vh - 80px);
+  margin-left: 300px; /* Space for DictionarySidebar */
+  min-height: 100vh;
 }
 
 .content-container {
-  padding: 2rem;
+  padding: 3rem 2rem;
+  max-width: 1400px;
+  margin: 0 6rem 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Agrandir et centrer les composants du dictionnaire */
+.content-container > * {
+  width: 100%;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 1.5rem auto;
+}
+
+/* Styles spécifiques pour le composant de recherche */
+.content-container :deep(.dictionary-search) {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+/* Styles pour les résultats de recherche */
+.content-container :deep(.search-results) {
+  width: 100%;
+  max-width: 1000px;
+  margin: 1.5rem auto;
+}
+
+/* Styles pour la définition de mot */
+.content-container :deep(.word-definition) {
+  width: 100%;
+  max-width: 1000px;
+  margin: 1.5rem auto;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .dictionary-layout {
+    margin-left: 0;
     flex-direction: column;
+  }
+  
+  .dictionary-sidebar {
+    position: relative;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: 50vh;
+    overflow-y: auto;
   }
   
   .dictionary-main {
@@ -208,7 +267,16 @@ const performSearch = (query: string, category: string) => {
   }
   
   .content-container {
-    padding: 1rem;
+    padding: 2rem 1rem;
+    max-width: 100%;
+    min-height: auto;
+    margin: 0;
+    align-items: center;
+  }
+  
+  .content-container > * {
+    max-width: 100%;
+    margin: 1rem 0;
   }
 }
 </style>

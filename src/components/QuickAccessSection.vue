@@ -7,7 +7,7 @@
         <div class="access-card" @click="navigateTo('dictionary')">
           <div class="access-icon">
             <div class="icon-bg">
-              <img src="@/assets/dictionnaire_icon.png" alt="Dictionnaire" class="icon" />
+              <MaterialIcon name="menu_book" size="large" color="var(--accent-primary)" />
             </div>
           </div>
           <h3 class="access-title">Dictionnaire</h3>
@@ -17,7 +17,7 @@
         <div class="access-card" @click="navigateTo('assistant')">
           <div class="access-icon">
             <div class="icon-bg">
-              <img src="@/assets/assistant_icon.png" alt="Assistant IA" class="icon" />
+              <MaterialIcon name="support_agent" size="large" color="var(--accent-primary)" />
             </div>
           </div>
           <h3 class="access-title">Assistant IA</h3>
@@ -27,22 +27,13 @@
         <div class="access-card" @click="navigateTo('editor')">
           <div class="access-icon">
             <div class="icon-bg">
-              <img src="@/assets/editeur_icon.png" alt="Éditeur" class="icon" />
+              <MaterialIcon name="edit" size="large" color="var(--accent-primary)" />
             </div>
           </div>
           <h3 class="access-title">Éditeur</h3>
           <p class="access-description">Rédiger du texte</p>
         </div>
         
-        <div class="access-card" @click="navigateTo('translation')">
-          <div class="access-icon">
-            <div class="icon-bg">
-              <img src="@/assets/tradiction_icon.png" alt="Traduction" class="icon" />
-            </div>
-          </div>
-          <h3 class="access-title">Traduction</h3>
-          <p class="access-description">Traduire des textes</p>
-        </div>
       </div>
     </div>
   </section>
@@ -50,6 +41,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import MaterialIcon from './MaterialIcon.vue'
 
 const router = useRouter()
 
@@ -58,8 +50,6 @@ const navigateTo = (section: string) => {
     router.push('/dictionnaire')
   } else if (section === 'assistant') {
     router.push('/assistant')
-  } else if (section === 'translation') {
-    router.push('/traduction')
   } else if (section === 'editor') {
     router.push('/editeur')
   } else {
@@ -85,9 +75,9 @@ const navigateTo = (section: string) => {
 
 .quick-access-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -194,7 +184,7 @@ const navigateTo = (section: string) => {
   }
   
   .quick-access-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   

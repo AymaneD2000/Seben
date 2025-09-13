@@ -15,10 +15,10 @@
             @keyup.enter="performSearch"
           />
           <button class="voice-button" title="Recherche vocale">
-            <img src="@/assets/microphone_icon.png" alt="Microphone" class="button-icon" />
+            <MaterialIcon name="mic" size="medium" />
           </button>
           <button class="search-button" @click="performSearch">
-            <img src="@/assets/search_icon.png" alt="Search" class="button-icon" />
+            <MaterialIcon name="search" size="medium" />
           </button>
         </div>
       </div>
@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import MaterialIcon from './MaterialIcon.vue'
 
 const searchQuery = ref('')
 const activeCategory = ref('tous')
