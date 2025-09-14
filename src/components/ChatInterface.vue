@@ -82,17 +82,17 @@
     <!-- Input Area -->
     <div class="input-area">
       <div class="input-container">
-        <button class="input-btn" title="Joindre un fichier">
+        <button class="input-btn" :title="t.chat.attachFile">
           <MaterialIcon name="attach_file" size="medium" />
         </button>
-        <button class="input-btn" title="Enregistrement vocal">
+        <button class="input-btn" :title="t.chat.voiceRecord">
           <MaterialIcon name="mic" size="medium" />
         </button>
         <input 
           v-model="newMessage"
           @keyup.enter="sendMessage"
           type="text" 
-          placeholder="I be ko daw fe? (Que voulez-vous dire?)"
+          :placeholder="t.chat.placeholder"
           class="message-input"
         />
         <button 
@@ -104,7 +104,7 @@
         </button>
       </div>
       <div class="input-footer">
-        <span class="footer-text">Appuyez sur Entrée pour envoyer, Maj+Entrée pour une nouvelle ligne</span>
+        <span class="footer-text">{{ t.chat.footer }}</span>
       </div>
     </div>
   </div>
@@ -113,6 +113,11 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
 import MaterialIcon from './MaterialIcon.vue'
+import { useI18nStore } from '@/stores/i18n'
+import { storeToRefs } from 'pinia'
+
+const i18nStore = useI18nStore()
+const { t } = storeToRefs(i18nStore)
 
 interface MessageExample {
   bambara: string

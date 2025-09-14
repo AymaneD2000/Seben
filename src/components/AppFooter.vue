@@ -4,10 +4,7 @@
       <div class="footer-content">
         <!-- Company Info -->
         <div class="footer-section">
-          <h3 class="footer-title">Seben</h3>
-          <p class="footer-description">
-            {{ t.footer.description }}
-          </p>
+          <h3 class="footer-title">SεBεN!</h3>
         </div>
         
         <!-- Functionalities -->
@@ -21,14 +18,14 @@
           </ul>
         </div>
         
-        <!-- Model Suite -->
+        <!-- Contact & Help -->
         <div class="footer-section">
-          <h4 class="footer-heading">{{ t.footer.modelSuite }}</h4>
+          <h4 class="footer-heading">Contact & Aide</h4>
           <ul class="footer-links">
-            <li><a href="#" class="footer-link">{{ t.footer.links.models }}</a></li>
-            <li><a href="#" class="footer-link">{{ t.footer.links.api }}</a></li>
-            <li><a href="#" class="footer-link">{{ t.footer.links.documentation }}</a></li>
-            <li><a href="#" class="footer-link">{{ t.footer.links.developers }}</a></li>
+            <li><a href="#" class="footer-link">Contact</a></li>
+            <li><a href="#" class="footer-link">Aide</a></li>
+            <li><a href="#" class="footer-link">Model Suite</a></li>
+            <li><a href="#" class="footer-link">FAQ</a></li>
           </ul>
         </div>
       </div>
@@ -74,7 +71,9 @@ const { t } = storeToRefs(i18nStore)
   background-color: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
   padding: 3rem 0 2rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .footer-content {
@@ -91,7 +90,7 @@ const { t } = storeToRefs(i18nStore)
 .footer-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--accent-primary);
   margin-bottom: 1rem;
 }
 

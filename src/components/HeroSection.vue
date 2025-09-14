@@ -3,9 +3,6 @@
     <div class="container">
       <div class="hero-content">
         <div class="hero-text">
-          <div class="hero-logo">
-            <AppLogo size="large" />
-          </div>
           <h1 class="hero-title">
             {{ t.hero.title }}
           </h1>
@@ -93,11 +90,6 @@ const performSearch = () => {
   align-items: center;
 }
 
-.hero-logo {
-  margin-bottom: 2rem;
-  display: flex;
-  justify-content: center;
-}
 
 .hero-title {
   font-size: 3.5rem;

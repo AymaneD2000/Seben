@@ -77,25 +77,18 @@
           <div v-else class="auth-menu">
             <button class="auth-toggle" @click="toggleAuthMenu">
               <MaterialIcon name="account_circle" size="medium" />
-              <span>{{ t.header.myAccount }}</span>
               <MaterialIcon name="keyboard_arrow_down" size="small" :class="{ 'rotated': showAuthMenu }" />
             </button>
             
             <div v-if="showAuthMenu" class="auth-dropdown">
               <RouterLink to="/login" class="auth-option" @click="closeAuthMenu">
                 <MaterialIcon name="login" size="small" />
-                <div class="auth-option-content">
-                  <span class="auth-option-title">{{ t.header.login }}</span>
-                  <span class="auth-option-subtitle">{{ t.auth.loginSubtitle }}</span>
-                </div>
+                <span class="auth-option-title">{{ t.header.login }}</span>
               </RouterLink>
               
               <RouterLink to="/register" class="auth-option" @click="closeAuthMenu">
                 <MaterialIcon name="person_add" size="small" />
-                <div class="auth-option-content">
-                  <span class="auth-option-title">{{ t.header.register }}</span>
-                  <span class="auth-option-subtitle">{{ t.auth.registerSubtitle }}</span>
-                </div>
+                <span class="auth-option-title">{{ t.header.register }}</span>
               </RouterLink>
             </div>
           </div>
@@ -298,7 +291,7 @@ onUnmounted(() => {
   border-radius: 0.75rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   min-width: 200px;
-  z-index: 1000;
+  z-index: 9999;
   overflow: hidden;
   margin-top: 0.5rem;
 }
@@ -426,6 +419,14 @@ onUnmounted(() => {
   font-size: 1.2rem;
 }
 
+.auth-toggle {
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0.75rem;
+  font-size: 1.4rem;
+}
+
 .theme-toggle:hover,
 .user-profile:hover,
 .login-btn:hover {
@@ -509,11 +510,16 @@ onUnmounted(() => {
   
   .theme-toggle,
   .user-profile,
-  .auth-toggle,
   .language-toggle {
     width: 2rem;
     height: 2rem;
     font-size: 1rem;
+  }
+  
+  .auth-toggle {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
   }
   
   .auth-toggle span {

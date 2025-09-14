@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useThemeStore = defineStore('theme', () => {
-  const isDark = ref(true) // Start with dark mode as shown in design
+  const isDark = ref(false) // Start with light mode as default
   
   const theme = computed(() => isDark.value ? 'dark' : 'light')
   

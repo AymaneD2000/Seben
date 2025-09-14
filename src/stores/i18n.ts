@@ -119,6 +119,46 @@ export interface Translations {
     usernameHint: string
     phoneHint: string
   }
+  
+  // Dictionary
+  dictionary: {
+    title: string
+    searchPlaceholder: string
+    categories: {
+      all: string
+      nouns: string
+      verbs: string
+      adjectives: string
+      expressions: string
+    }
+    actions: {
+      seeAllWords: string
+      popularWords: string
+    }
+  }
+  
+  // Editor
+  editor: {
+    title: string
+    placeholder: string
+    status: {
+      ready: string
+      recording: string
+    }
+    suggestions: {
+      grammar: string
+      style: string
+      spelling: string
+    }
+  }
+  
+  // Chat
+  chat: {
+    placeholder: string
+    footer: string
+    attachFile: string
+    voiceRecord: string
+  }
 }
 
 const translations: Record<string, Translations> = {
@@ -219,6 +259,40 @@ const translations: Record<string, Translations> = {
       contact: 'Contact',
       usernameHint: 'This name will be visible to other users',
       phoneHint: 'We will send you a verification code'
+    },
+    dictionary: {
+      title: 'Dictionary',
+      searchPlaceholder: 'What are you looking for?',
+      categories: {
+        all: 'All',
+        nouns: 'Nouns',
+        verbs: 'Verbs',
+        adjectives: 'Adjectives',
+        expressions: 'Expressions'
+      },
+      actions: {
+        seeAllWords: 'See all words',
+        popularWords: 'Popular words'
+      }
+    },
+    editor: {
+      title: 'Bambara Text Editor',
+      placeholder: 'Start writing your text in Bambara...',
+      status: {
+        ready: 'Ready',
+        recording: 'Recording...'
+      },
+      suggestions: {
+        grammar: 'Grammar',
+        style: 'Style',
+        spelling: 'Spelling'
+      }
+    },
+    chat: {
+      placeholder: 'What do you want to say?',
+      footer: 'Press Enter to send, Shift+Enter for new line',
+      attachFile: 'Attach file',
+      voiceRecord: 'Voice recording'
     }
   },
   
@@ -319,6 +393,40 @@ const translations: Record<string, Translations> = {
       contact: 'Contact',
       usernameHint: 'Ce nom sera visible par les autres utilisateurs',
       phoneHint: 'Nous vous enverrons un code de vérification'
+    },
+    dictionary: {
+      title: 'Dictionnaire',
+      searchPlaceholder: 'Que cherchez-vous?',
+      categories: {
+        all: 'Tous',
+        nouns: 'Noms',
+        verbs: 'Verbes',
+        adjectives: 'Adjectifs',
+        expressions: 'Expressions'
+      },
+      actions: {
+        seeAllWords: 'Voir tous les mots',
+        popularWords: 'Mots populaires'
+      }
+    },
+    editor: {
+      title: 'Éditeur de Texte Bambara',
+      placeholder: 'Commencez à écrire votre texte en bambara...',
+      status: {
+        ready: 'Prêt',
+        recording: 'Enregistrement...'
+      },
+      suggestions: {
+        grammar: 'Grammaire',
+        style: 'Style',
+        spelling: 'Orthographe'
+      }
+    },
+    chat: {
+      placeholder: 'Que voulez-vous dire?',
+      footer: 'Appuyez sur Entrée pour envoyer, Maj+Entrée pour une nouvelle ligne',
+      attachFile: 'Joindre un fichier',
+      voiceRecord: 'Enregistrement vocal'
     }
   },
   

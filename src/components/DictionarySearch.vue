@@ -1,15 +1,14 @@
 <template>
   <div class="dictionary-search">
     <div class="search-header">
-      <h1 class="page-title">Dictionnaire Bambara</h1>
-      <p class="page-subtitle">Recherchez des mots, leurs définitions et exemples d'utilisation</p>
+      <h1 class="page-title">{{ t.dictionary.title }}</h1>
       
       <!-- Main Search Bar -->
       <div class="search-container">
         <div class="search-bar">
           <input 
             type="text" 
-            placeholder="I be fen daw fe? (Que cherchez-vous?)"
+            :placeholder="t.dictionary.searchPlaceholder"
             v-model="searchQuery"
             class="search-input"
             @keyup.enter="performSearch"
@@ -38,10 +37,10 @@
       <!-- Quick Actions -->
       <div class="quick-actions">
         <button class="action-btn" @click="showAllWords">
-          Voir tous les mots
+          {{ t.dictionary.actions.seeAllWords }}
         </button>
         <button class="action-btn" @click="showPopularWords">
-          Mots populaires
+          {{ t.dictionary.actions.popularWords }}
         </button>
       </div>
     </div>
@@ -49,19 +48,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import MaterialIcon from './MaterialIcon.vue'
+import { useI18nStore } from '@/stores/i18n'
+import { storeToRefs } from 'pinia'
+
+const i18nStore = useI18nStore()
+const { t } = storeToRefs(i18nStore)
 
 const searchQuery = ref('')
 const activeCategory = ref('tous')
 
-const categories = [
-  { id: 'tous', name: 'Tous' },
-  { id: 'noms', name: 'Noms' },
-  { id: 'verbes', name: 'Verbes' },
-  { id: 'adjectifs', name: 'Adjectifs' },
-  { id: 'expressions', name: 'Expressions' }
-]
+const categories = computed(() => [
+  { id: 'tous', name: t.value.dictionary.categories.all },
+  { id: 'noms', name: t.value.dictionary.categories.nouns },
+  { id: 'verbes', name: t.value.dictionary.categories.verbs },
+  { id: 'adjectifs', name: t.value.dictionary.categories.adjectives },
+  { id: 'expressions', name: t.value.dictionary.categories.expressions }
+])
 
 const emit = defineEmits<{
   search: [query: string, category: string]
@@ -93,8 +97,8 @@ const showPopularWords = () => {
 
 <style scoped>
 .dictionary-search {
-  padding: 2rem;
-  max-width: 800px;
+  padding: 3rem;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -104,10 +108,10 @@ const showPopularWords = () => {
 }
 
 .page-title {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .page-subtitle {
@@ -127,10 +131,10 @@ const showPopularWords = () => {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 3rem;
-  padding: 0.75rem 1.5rem;
-  gap: 1rem;
+  padding: 1rem 2rem;
+  gap: 1.5rem;
   transition: border-color 0.3s ease;
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
@@ -144,7 +148,7 @@ const showPopularWords = () => {
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 .search-input::placeholder {
@@ -190,14 +194,14 @@ const showPopularWords = () => {
 }
 
 .filter-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   border: 1px solid var(--border-color);
   background-color: var(--bg-secondary);
   color: var(--text-secondary);
   border-radius: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
@@ -221,14 +225,14 @@ const showPopularWords = () => {
 }
 
 .action-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 2rem;
   background-color: var(--bg-tertiary);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 500;
 }
 
@@ -242,19 +246,20 @@ const showPopularWords = () => {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .dictionary-search {
-    padding: 1rem;
+    padding: 2rem 1rem;
   }
   
   .page-title {
-    font-size: 2rem;
-  }
-  
-  .page-subtitle {
-    font-size: 1rem;
+    font-size: 2.5rem;
   }
   
   .search-bar {
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
+    max-width: 100%;
+  }
+  
+  .search-input {
+    font-size: 1rem;
   }
   
   .category-filters {
@@ -262,8 +267,13 @@ const showPopularWords = () => {
   }
   
   .filter-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .action-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
   }
 }
 </style>

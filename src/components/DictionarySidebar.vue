@@ -1,50 +1,6 @@
 <template>
   <aside class="dictionary-sidebar">
-    <!-- Popular Words Section -->
-    <div class="sidebar-section">
-      <h3 class="section-title">Mots populaires</h3>
-      <div class="word-list">
-        <div class="word-item" @click="selectWord('nege')">
-          <span class="word-name">Nege</span>
-          <span class="word-category">Ferme</span>
-        </div>
-        <div class="word-item" @click="selectWord('dugukolo')">
-          <span class="word-name">Dugukolo</span>
-          <span class="word-category">Terre</span>
-        </div>
-        <div class="word-item" @click="selectWord('sene')">
-          <span class="word-name">Sene</span>
-          <span class="word-category">Agriculture</span>
-        </div>
-        <div class="word-item" @click="selectWord('foroba')">
-          <span class="word-name">Foroba</span>
-          <span class="word-category">Public</span>
-        </div>
-        <div class="word-item" @click="selectWord('dugu')">
-          <span class="word-name">Dugu</span>
-          <span class="word-category">Village</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recently Consulted Section -->
-    <div class="sidebar-section">
-      <h3 class="section-title">Récemment consultés</h3>
-      <div class="word-list">
-        <div class="word-item recent" @click="selectWord('nege')">
-          <span class="word-name">Nege</span>
-          <span class="word-time">Il y a 2h</span>
-        </div>
-        <div class="word-item recent" @click="selectWord('dugukolo')">
-          <span class="word-name">Dugukolo</span>
-          <span class="word-time">Il y a 4h</span>
-        </div>
-        <div class="word-item recent" @click="selectWord('sene')">
-          <span class="word-name">Sene</span>
-          <span class="word-time">Il y a 5h</span>
-        </div>
-      </div>
-    </div>
+    <!-- Empty sidebar - content removed -->
   </aside>
 </template>
 

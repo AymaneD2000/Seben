@@ -6,6 +6,11 @@
         <AppLogo size="medium" />
       </div>
       <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button @click="toggleTheme" class="theme-toggle" :title="isDark ? 'Mode clair' : 'Mode sombre'">
+          <MaterialIcon :name="isDark ? 'light_mode' : 'dark_mode'" size="small" />
+        </button>
+        
         <!-- Language Selector -->
         <div class="language-selector">
           <button class="language-toggle" @click="toggleLanguageMenu">
@@ -77,6 +82,12 @@
               </div>
             </div>
           </li>
+          <li v-if="!authStore.isAuthenticated">
+            <RouterLink to="/login" class="nav-item">
+              <MaterialIcon name="person" size="medium" />
+              <span v-if="!isCollapsed">Profil</span>
+            </RouterLink>
+          </li>
           <li v-if="authStore.isAuthenticated">
             <button @click="handleLogout" class="nav-item logout-btn">
               <MaterialIcon name="logout" size="medium" />
@@ -86,18 +97,6 @@
         </ul>
       </div>
 
-      <!-- Settings Section -->
-      <div class="nav-section">
-        <h3 class="nav-section-title" v-if="!isCollapsed">{{ t.nav.settings }}</h3>
-        <ul class="nav-list">
-          <li>
-            <button @click="toggleTheme" class="nav-item">
-              <MaterialIcon :name="isDark ? 'light_mode' : 'dark_mode'" size="medium" />
-              <span v-if="!isCollapsed">{{ isDark ? t.nav.lightMode : t.nav.darkMode }}</span>
-            </button>
-          </li>
-        </ul>
-      </div>
     </nav>
   </aside>
 </template>
@@ -170,6 +169,7 @@ onUnmounted(() => {
   flex-direction: column;
   z-index: 1000;
   overflow-y: auto;
+  overflow-x: visible;
 }
 
 /* ===== HEADER LAYOUT ===== */
@@ -182,6 +182,7 @@ onUnmounted(() => {
   width: 100%;
   box-sizing: border-box;
   position: relative;
+  overflow: visible;
 }
 
 .sidebar-logo {
@@ -200,6 +201,27 @@ onUnmounted(() => {
   gap: 0.5rem;
   flex-shrink: 0;
   margin-left: auto;
+  overflow: visible;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--bg-secondary);
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--accent-primary);
 }
 
 .language-selector {
@@ -233,7 +255,7 @@ onUnmounted(() => {
 .language-dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
@@ -241,7 +263,7 @@ onUnmounted(() => {
   overflow: hidden;
   margin-top: 0.25rem;
   min-width: 150px;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .language-option {

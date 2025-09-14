@@ -2,11 +2,6 @@
   <DashboardLayout>
     <div class="dictionary-view">
       <div class="dictionary-layout">
-        <!-- Dictionary Sidebar -->
-        <aside class="dictionary-sidebar">
-          <DictionarySidebar @select-word="selectWord" />
-        </aside>
-        
         <!-- Main Content -->
         <main class="dictionary-main">
           <div class="content-container">
@@ -39,7 +34,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
-import DictionarySidebar from '@/components/DictionarySidebar.vue'
 import DictionarySearch from '@/components/DictionarySearch.vue'
 import SearchResults from '@/components/SearchResults.vue'
 import WordDefinition from '@/components/WordDefinition.vue'
@@ -185,98 +179,75 @@ const performSearch = (query: string, category: string) => {
 .dictionary-layout {
   display: flex;
   position: relative;
-  margin-left: 280px; /* Space for AppSidebar - same for both states */
-}
-
-.dictionary-sidebar {
-  width: 300px;
-  background-color: var(--card-bg);
-  border-right: 1px solid var(--border-color);
-  height: 100vh;
-  position: fixed;
-  left: 280px; /* Position after AppSidebar */
-  top: 0;
-  overflow-y: auto;
-  z-index: 100;
+  margin-left: 280px; /* Space for AppSidebar */
 }
 
 .dictionary-main {
   flex: 1;
-  margin-left: 300px; /* Space for DictionarySidebar */
   min-height: 100vh;
+  width: 100%;
 }
 
 .content-container {
-  padding: 3rem 2rem;
-  max-width: 1400px;
-  margin: 0 6rem 0 auto;
+  padding: 3rem 4rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  width: 100%;
 }
 
 /* Agrandir et centrer les composants du dictionnaire */
 .content-container > * {
   width: 100%;
-  max-width: 1000px;
-  margin: 1.5rem auto;
+  max-width: 1400px;
+  margin: 2rem 0;
 }
 
 /* Styles spécifiques pour le composant de recherche */
 .content-container :deep(.dictionary-search) {
   width: 100%;
-  max-width: 800px;
-  margin: 2rem auto;
+  max-width: 1200px;
+  margin: 3rem 0;
 }
 
 /* Styles pour les résultats de recherche */
 .content-container :deep(.search-results) {
   width: 100%;
-  max-width: 1000px;
-  margin: 1.5rem auto;
+  max-width: 1400px;
+  margin: 2rem 0;
 }
 
 /* Styles pour la définition de mot */
 .content-container :deep(.word-definition) {
   width: 100%;
-  max-width: 1000px;
-  margin: 1.5rem auto;
+  max-width: 1400px;
+  margin: 2rem 0;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .dictionary-layout {
     margin-left: 0;
-    flex-direction: column;
-  }
-  
-  .dictionary-sidebar {
-    position: relative;
-    left: 0;
-    width: 100%;
-    height: auto;
-    max-height: 50vh;
-    overflow-y: auto;
   }
   
   .dictionary-main {
-    margin-left: 0;
+    width: 100%;
   }
   
   .content-container {
-    padding: 2rem 1rem;
-    max-width: 100%;
-    min-height: auto;
-    margin: 0;
+    padding: 2rem 1.5rem;
     align-items: center;
   }
   
   .content-container > * {
     max-width: 100%;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
+  }
+  
+  .content-container :deep(.dictionary-search) {
+    margin: 2rem 0;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="text-editor-container">
     <!-- Editor Header -->
     <div class="editor-header">
-      <h2 class="document-title">Éditeur de Texte Bambara</h2>
+      <h2 class="document-title">{{ t.editor.title }}</h2>
     </div>
 
     <!-- Main Editor Area -->
@@ -15,7 +15,7 @@
         @selectionchange="updateCursorPosition"
         @click="updateCursorPosition"
         class="editor-textarea"
-        placeholder="Commencez à écrire votre texte en bambara..."
+        :placeholder="t.editor.placeholder"
         spellcheck="false"
       ></textarea>
       
@@ -37,8 +37,8 @@
       <div class="status-right">
         <button class="voice-input-btn" @click="toggleVoiceInput" :class="{ active: isRecording }">
           <MaterialIcon name="mic" size="small" />
-          <span v-if="isRecording">Enregistrement...</span>
-          <span v-else>Prêt</span>
+          <span v-if="isRecording">{{ t.editor.status.recording }}</span>
+          <span v-else>{{ t.editor.status.ready }}</span>
         </button>
       </div>
     </div>
@@ -48,6 +48,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import MaterialIcon from './MaterialIcon.vue'
+import { useI18nStore } from '@/stores/i18n'
+import { storeToRefs } from 'pinia'
+
+const i18nStore = useI18nStore()
+const { t } = storeToRefs(i18nStore)
 
 const content = ref('I ni sogoma !')
 const editorTextarea = ref<HTMLTextAreaElement>()

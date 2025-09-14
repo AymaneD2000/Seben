@@ -25,9 +25,8 @@ const themeStore = useThemeStore()
 const { isDark } = storeToRefs(themeStore)
 
 const logoSource = computed(() => {
-  return isDark.value 
-    ? '/src/assets/seben-logo-white.svg' 
-    : '/src/assets/seben-logo-new.svg'
+  // Always use the blue logo (light mode version) regardless of theme
+  return '/src/assets/seben-logo-new.svg'
 })
 
 const sizeClass = computed(() => {
