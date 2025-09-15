@@ -114,9 +114,11 @@
 import { ref, nextTick, onMounted } from 'vue'
 import MaterialIcon from './MaterialIcon.vue'
 import { useI18nStore } from '@/stores/i18n'
+import { useHistoryStore } from '@/stores/history'
 import { storeToRefs } from 'pinia'
 
 const i18nStore = useI18nStore()
+const historyStore = useHistoryStore()
 const { t } = storeToRefs(i18nStore)
 
 interface MessageExample {
@@ -140,6 +142,9 @@ const messages = ref<Message[]>([
     time: 'Maintenant'
   }
 ])
+
+const conversationId = ref(`conv_${Date.now()}`)
+const conversationTitle = ref('Nouvelle conversation')
 
 const newMessage = ref('')
 const isTyping = ref(false)
@@ -166,6 +171,11 @@ const sendMessage = async () => {
   const messageText = newMessage.value
   newMessage.value = ''
   
+  // Mettre à jour le titre de la conversation si c'est le premier message
+  if (messages.value.length === 1) {
+    conversationTitle.value = messageText.substring(0, 30) + (messageText.length > 30 ? '...' : '')
+  }
+  
   await scrollToBottom()
   
   // Simulate typing
@@ -176,6 +186,20 @@ const sendMessage = async () => {
     isTyping.value = false
     const response = generateResponse(messageText)
     messages.value.push(response)
+    
+    // Enregistrer la conversation dans l'historique après quelques échanges
+    if (messages.value.length >= 4) { // 2 échanges (user + assistant)
+      historyStore.addHistoryItem({
+        type: 'conversation',
+        page: 'assistant',
+        action: conversationTitle.value, // Juste le titre de la conversation
+        details: 'Conversation avec l\'assistant',
+        icon: 'chat',
+        conversationId: conversationId.value,
+        conversationTitle: conversationTitle.value
+      })
+    }
+    
     nextTick(() => scrollToBottom())
   }, 2000)
 }

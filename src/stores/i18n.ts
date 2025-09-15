@@ -159,6 +159,27 @@ export interface Translations {
     attachFile: string
     voiceRecord: string
   }
+  
+  // History
+  history: {
+    title: string
+    recent: string
+    clearAll: string
+    clearPage: string
+    noHistory: string
+    removeItem: string
+    removePageHistory: string
+    actions: {
+      search: string
+      conversation: string
+      document: string
+    }
+    pages: {
+      dictionary: string
+      assistant: string
+      editor: string
+    }
+  }
 }
 
 const translations: Record<string, Translations> = {
@@ -293,6 +314,25 @@ const translations: Record<string, Translations> = {
       footer: 'Press Enter to send, Shift+Enter for new line',
       attachFile: 'Attach file',
       voiceRecord: 'Voice recording'
+    },
+    history: {
+      title: 'History',
+      recent: 'Recent',
+      clearAll: 'Clear all',
+      clearPage: 'Clear page history',
+      noHistory: 'No history yet',
+      removeItem: 'Remove from history',
+      removePageHistory: 'Clear page history',
+      actions: {
+        search: 'Search',
+        conversation: 'Conversation',
+        document: 'Document'
+      },
+      pages: {
+        dictionary: 'Dictionary',
+        assistant: 'Assistant',
+        editor: 'Editor'
+      }
     }
   },
   
@@ -427,6 +467,25 @@ const translations: Record<string, Translations> = {
       footer: 'Appuyez sur Entrée pour envoyer, Maj+Entrée pour une nouvelle ligne',
       attachFile: 'Joindre un fichier',
       voiceRecord: 'Enregistrement vocal'
+    },
+    history: {
+      title: 'Historique',
+      recent: 'Récent',
+      clearAll: 'Tout effacer',
+      clearPage: 'Effacer l\'historique de la page',
+      noHistory: 'Aucun historique',
+      removeItem: 'Supprimer de l\'historique',
+      removePageHistory: 'Effacer l\'historique de la page',
+      actions: {
+        search: 'Recherche',
+        conversation: 'Conversation',
+        document: 'Document'
+      },
+      pages: {
+        dictionary: 'Dictionnaire',
+        assistant: 'Assistant',
+        editor: 'Éditeur'
+      }
     }
   },
   
@@ -527,6 +586,59 @@ const translations: Record<string, Translations> = {
       contact: 'Kan',
       usernameHint: 'Nin tɔgɔ bɛna ye mɔgɔ wɛrɛw ma',
       phoneHint: 'An bɛna kɔdɛ ci i ma'
+    },
+    dictionary: {
+      title: 'Daɲɛgafe',
+      searchPlaceholder: 'Mun b\'a fɛ?',
+      categories: {
+        all: 'Bɛɛ',
+        nouns: 'Tɔgɔw',
+        verbs: 'Kɛnɛyaw',
+        adjectives: 'Jateminɛw',
+        expressions: 'Kumaw'
+      },
+      actions: {
+        seeAllWords: 'Kanw bɛɛ ye',
+        popularWords: 'Kanw ka diya'
+      }
+    },
+    editor: {
+      title: 'Bambara Sɛbɛnnikɛla',
+      placeholder: 'I ka kuma sɛbɛn Bambara kan...',
+      status: {
+        ready: 'Sɔrɔlen',
+        recording: 'Sɛbɛnni...'
+      },
+      suggestions: {
+        grammar: 'Kan kalan',
+        style: 'Cogo',
+        spelling: 'Sɛbɛnni'
+      }
+    },
+    chat: {
+      placeholder: 'Mun b\'a fɛ ka fɔ?',
+      footer: 'Enter ci ka ci, Shift+Enter ka kuma kura',
+      attachFile: 'Fichier ci',
+      voiceRecord: 'Kan sɛbɛnni'
+    },
+    history: {
+      title: 'Kɔrɔlen',
+      recent: 'Kɔrɔlen',
+      clearAll: 'Bɛɛ bɔra',
+      clearPage: 'Kɔrɔlen bɔra',
+      noHistory: 'Kɔrɔlen tɛ foyi',
+      removeItem: 'Kɔrɔlen bɔra',
+      removePageHistory: 'Kɔrɔlen bɔra',
+      actions: {
+        search: 'Cɛ',
+        conversation: 'Kuma',
+        document: 'Sɛbɛnni'
+      },
+      pages: {
+        dictionary: 'Daɲɛgafe',
+        assistant: 'Dɛmɛnikɛla',
+        editor: 'Sɛbɛnnikɛla'
+      }
     }
   }
 }

@@ -15,7 +15,9 @@
             <SearchResults 
               v-if="currentView === 'results'"
               :results="searchResults"
+              :search-type="currentSearchType"
               @select-word="selectWord"
+              @back-to-search="goBackToSearch"
             />
             
             <!-- Single Word Definition -->
@@ -126,6 +128,7 @@ const wordsDatabase: Record<string, WordData> = {
 const currentView = ref<'search' | 'results' | 'word'>('search')
 const selectedWord = ref('')
 const searchResults = ref<WordData[]>([])
+const currentSearchType = ref('')
 
 const selectedWordData = computed(() => {
   if (selectedWord.value && wordsDatabase[selectedWord.value.toLowerCase()]) {
@@ -141,6 +144,9 @@ const selectWord = (word: string) => {
 
 const performSearch = (query: string, category: string) => {
   console.log('Searching for:', query, 'in category:', category)
+  
+  // Store the current search type
+  currentSearchType.value = category
   
   // Simple search implementation - in a real app, this would be more sophisticated
   let results = Object.values(wordsDatabase)
@@ -167,6 +173,11 @@ const performSearch = (query: string, category: string) => {
   console.log('Search results:', results.length, 'words found')
   searchResults.value = results
   currentView.value = 'results'
+}
+
+const goBackToSearch = () => {
+  currentView.value = 'search'
+  currentSearchType.value = ''
 }
 </script>
 

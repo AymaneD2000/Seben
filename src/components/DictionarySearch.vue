@@ -51,9 +51,11 @@
 import { ref, computed } from 'vue'
 import MaterialIcon from './MaterialIcon.vue'
 import { useI18nStore } from '@/stores/i18n'
+import { useHistoryStore } from '@/stores/history'
 import { storeToRefs } from 'pinia'
 
 const i18nStore = useI18nStore()
+const historyStore = useHistoryStore()
 const { t } = storeToRefs(i18nStore)
 
 const searchQuery = ref('')
@@ -73,6 +75,17 @@ const emit = defineEmits<{
 
 const performSearch = () => {
   if (searchQuery.value.trim()) {
+    // Enregistrer seulement les vraies recherches dans l'historique
+    historyStore.addHistoryItem({
+      type: 'search',
+      page: 'dictionary',
+      action: searchQuery.value, // Juste le mot recherché
+      details: 'Recherche dans le dictionnaire',
+      icon: 'search',
+      searchQuery: searchQuery.value,
+      searchCategory: activeCategory.value
+    })
+    
     emit('search', searchQuery.value, activeCategory.value)
   }
 }
@@ -86,11 +99,13 @@ const setActiveCategory = (categoryId: string) => {
 
 const showAllWords = () => {
   searchQuery.value = ''
+  // Ne pas enregistrer dans l'historique car ce n'est pas une vraie recherche
   emit('search', '', 'tous')
 }
 
 const showPopularWords = () => {
   searchQuery.value = ''
+  // Ne pas enregistrer dans l'historique car ce n'est pas une vraie recherche
   emit('search', '', 'populaires')
 }
 </script>

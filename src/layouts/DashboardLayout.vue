@@ -44,9 +44,6 @@ import AppSidebar from '@/components/AppSidebar.vue'
   margin-left: 280px;
 }
 
-:global(.app-sidebar.collapsed) ~ .main-content .assistant-sidebar {
-  left: 280px;
-}
 
 /* Editor specific adjustments - same margin for both states */
 :global(.app-sidebar.collapsed) ~ .main-content .editor-layout {

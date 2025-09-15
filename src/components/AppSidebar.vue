@@ -97,6 +97,71 @@
         </ul>
       </div>
 
+      <!-- History Section -->
+      <div class="nav-section">
+        <h3 class="nav-section-title" v-if="!isCollapsed">{{ t.history.title }}</h3>
+        <div class="history-container">
+          <div v-if="recentHistory.length === 0" class="no-history">
+            <MaterialIcon name="history" size="small" />
+            <span v-if="!isCollapsed">{{ t.history.noHistory }}</span>
+          </div>
+          <div v-else class="history-list">
+            <div 
+              v-for="item in recentHistory.slice(0, 5)" 
+              :key="item.id"
+              class="history-item"
+              :class="{ 
+                'selected': selectedHistoryItems.includes(item.id),
+                'selection-mode': isSelectionMode 
+              }"
+              @click="isSelectionMode ? toggleItemSelection(item.id) : navigateToHistoryItem(item)"
+            >
+              <div class="history-icon">
+                <MaterialIcon :name="item.icon" size="small" />
+              </div>
+              <div v-if="!isCollapsed" class="history-content">
+                <div class="history-action">{{ item.action }}</div>
+                <div class="history-page">{{ t.history.pages[item.page] }}</div>
+                <div class="history-time">{{ formatTime(item.timestamp) }}</div>
+              </div>
+              <button 
+                v-if="!isCollapsed"
+                @click.stop="removeHistoryItem(item.id)"
+                class="history-remove"
+                :title="t.history.removeItem"
+              >
+                <MaterialIcon name="close" size="small" />
+              </button>
+            </div>
+          </div>
+          <div v-if="recentHistory.length > 0 && !isCollapsed" class="history-actions">
+            <div class="history-info">
+              <MaterialIcon name="info" size="small" />
+              <span v-if="!isSelectionMode">Survolez un élément pour le supprimer</span>
+              <span v-else>{{ selectedHistoryItems.length }} élément(s) sélectionné(s)</span>
+            </div>
+            <div class="history-buttons">
+              <button 
+                @click="toggleSelectionMode" 
+                class="selection-btn"
+                :class="{ active: isSelectionMode }"
+              >
+                <MaterialIcon :name="isSelectionMode ? 'close' : 'checklist'" size="small" />
+                {{ isSelectionMode ? 'Annuler' : 'Sélectionner' }}
+              </button>
+              <button 
+                v-if="isSelectionMode && selectedHistoryItems.length > 0"
+                @click="deleteSelectedItems" 
+                class="delete-selected-btn"
+              >
+                <MaterialIcon name="delete" size="small" />
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </nav>
   </aside>
 </template>
@@ -107,6 +172,7 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useThemeStore } from '@/stores/theme'
 import { useAuthStore } from '@/stores/auth'
 import { useI18nStore } from '@/stores/i18n'
+import { useHistoryStore } from '@/stores/history'
 import { storeToRefs } from 'pinia'
 import AppLogo from './AppLogo.vue'
 import MaterialIcon from './MaterialIcon.vue'
@@ -115,12 +181,16 @@ const router = useRouter()
 const themeStore = useThemeStore()
 const authStore = useAuthStore()
 const i18nStore = useI18nStore()
+const historyStore = useHistoryStore()
 
 const { isDark } = storeToRefs(themeStore)
 const { toggleTheme } = themeStore
 const { t, currentLanguage, languages } = storeToRefs(i18nStore)
+const { recentHistory, removeHistoryItem, clearAllHistory } = storeToRefs(historyStore)
 
 const showLanguageMenu = ref(false)
+const selectedHistoryItems = ref<string[]>([])
+const isSelectionMode = ref(false)
 
 const toggleLanguageMenu = () => {
   showLanguageMenu.value = !showLanguageMenu.value
@@ -134,6 +204,63 @@ const selectLanguage = (language: any) => {
 const handleLogout = () => {
   authStore.logout()
   router.push('/')
+}
+
+// History functions
+const navigateToHistoryItem = (item: any) => {
+  const routes: Record<string, string> = {
+    dictionary: '/dictionnaire',
+    assistant: '/assistant',
+    editor: '/editeur'
+  }
+  
+  if (routes[item.page]) {
+    router.push(routes[item.page])
+  }
+}
+
+const formatTime = (timestamp: Date) => {
+  const now = new Date()
+  const diff = now.getTime() - timestamp.getTime()
+  const minutes = Math.floor(diff / 60000)
+  const hours = Math.floor(diff / 3600000)
+  const days = Math.floor(diff / 86400000)
+
+  if (minutes < 1) return 'Maintenant'
+  if (minutes < 60) return `${minutes}min`
+  if (hours < 24) return `${hours}h`
+  return `${days}j`
+}
+
+// Fonctions de sélection multiple
+const toggleSelectionMode = () => {
+  isSelectionMode.value = !isSelectionMode.value
+  if (!isSelectionMode.value) {
+    selectedHistoryItems.value = []
+  }
+}
+
+const toggleItemSelection = (itemId: string) => {
+  const index = selectedHistoryItems.value.indexOf(itemId)
+  if (index > -1) {
+    selectedHistoryItems.value.splice(index, 1)
+  } else {
+    selectedHistoryItems.value.push(itemId)
+  }
+}
+
+const deleteSelectedItems = () => {
+  if (selectedHistoryItems.value.length === 0) return
+  
+  const confirmed = window.confirm(`Êtes-vous sûr de vouloir supprimer ${selectedHistoryItems.value.length} élément(s) de l'historique ?`)
+  if (!confirmed) return
+  
+  selectedHistoryItems.value.forEach(id => {
+    historyStore.removeHistoryItem(id, true) // true = pas de confirmation
+  })
+  
+  selectedHistoryItems.value = []
+  isSelectionMode.value = false
 }
 
 // Sidebar is now fixed - no state to load
@@ -470,6 +597,192 @@ onUnmounted(() => {
 }
 
 /* ===== FIXED SIDEBAR - NO COLLAPSE ===== */
+
+/* ===== HISTORY STYLES ===== */
+.history-container {
+  padding: 0 1rem;
+}
+
+.no-history {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.history-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.history-item.selection-mode {
+  cursor: pointer;
+}
+
+.history-item.selected {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--accent-primary);
+}
+
+.history-item.selected .history-icon {
+  background-color: var(--accent-primary);
+}
+
+.history-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--accent-primary);
+  border-radius: 50%;
+  color: white;
+  flex-shrink: 0;
+}
+
+.history-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-action {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-page {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.history-time {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.history-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  font-size: 0.8rem;
+}
+
+.history-item:hover .history-remove {
+  opacity: 1;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.history-remove:hover {
+  background-color: var(--error-color, #ef4444);
+  color: white;
+  transform: scale(1.1);
+}
+
+.history-actions {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.5rem;
+  background-color: var(--bg-secondary);
+  border-radius: 0.5rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.history-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.selection-btn,
+.delete-selected-btn,
+.clear-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.selection-btn:hover {
+  background-color: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.selection-btn.active {
+  background-color: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.delete-selected-btn:hover {
+  background-color: var(--error-color, #ef4444);
+  color: white;
+  border-color: var(--error-color, #ef4444);
+}
+
+.clear-all-btn:hover {
+  background-color: var(--error-color, #ef4444);
+  color: white;
+  border-color: var(--error-color, #ef4444);
+}
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {

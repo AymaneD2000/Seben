@@ -7,17 +7,17 @@
 
     <!-- Main Editor Area -->
     <div class="editor-main">
-      <textarea
-        ref="editorTextarea"
-        v-model="content"
+      <div
+        ref="editorContent"
+        contenteditable="true"
         @input="handleInput"
         @keydown="handleKeyDown"
         @selectionchange="updateCursorPosition"
         @click="updateCursorPosition"
-        class="editor-textarea"
-        :placeholder="t.editor.placeholder"
+        class="editor-content"
+        :data-placeholder="t.editor.placeholder"
         spellcheck="false"
-      ></textarea>
+      ></div>
       
       <!-- Cursor Position Indicator -->
       <div class="cursor-info">
@@ -46,18 +46,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue'
+import { ref, computed, watch, nextTick, onMounted } from 'vue'
 import MaterialIcon from './MaterialIcon.vue'
 import { useI18nStore } from '@/stores/i18n'
+import { useHistoryStore } from '@/stores/history'
 import { storeToRefs } from 'pinia'
 
 const i18nStore = useI18nStore()
+const historyStore = useHistoryStore()
 const { t } = storeToRefs(i18nStore)
 
 const content = ref('I ni sogoma !')
-const editorTextarea = ref<HTMLTextAreaElement>()
+const editorContent = ref<HTMLDivElement>()
+const history = ref<string[]>([])
+const historyIndex = ref(-1)
+
+// Initialize editor content
+const initializeEditor = () => {
+  if (editorContent.value) {
+    editorContent.value.textContent = content.value
+    // Initialize history with initial content
+    history.value = [content.value]
+    historyIndex.value = 0
+  }
+}
+
+// Initialize on mount
+onMounted(() => {
+  initializeEditor()
+})
 const isRecording = ref(false)
 const cursorPosition = ref({ line: 1, column: 1 })
+const documentId = ref(`doc_${Date.now()}`)
+const documentTitle = ref('Nouveau document')
 
 const wordCount = computed(() => {
   return content.value.trim().split(/\s+/).filter(word => word.length > 0).length
@@ -76,7 +97,11 @@ const emit = defineEmits<{
   cursorPositionChanged: [position: { line: number, column: number }]
 }>()
 
-const handleInput = () => {
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLDivElement
+  // Update content with innerHTML to preserve formatting
+  content.value = target.innerHTML
+  saveToHistory()
   updateCursorPosition()
   emit('contentChanged', content.value, {
     words: wordCount.value,
@@ -111,16 +136,19 @@ const handleKeyDown = (event: KeyboardEvent) => {
 }
 
 const updateCursorPosition = () => {
-  if (!editorTextarea.value) return
+  if (!editorContent.value) return
   
-  const textarea = editorTextarea.value
-  const cursorPos = textarea.selectionStart
-  const textBeforeCursor = content.value.substring(0, cursorPos)
-  const lines = textBeforeCursor.split('\n')
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) return
+  
+  const range = selection.getRangeAt(0)
+  const textNode = range.startContainer
+  const textContent = textNode.textContent || ''
+  const lines = textContent.split('\n')
   
   cursorPosition.value = {
     line: lines.length,
-    column: lines[lines.length - 1].length + 1
+    column: range.startOffset + 1
   }
   
   emit('cursorPositionChanged', cursorPosition.value)
@@ -140,12 +168,16 @@ const startVoiceRecording = () => {
   // Voice recording implementation would go here
   console.log('Starting voice recording...')
   
+  // Ne pas enregistrer dans l'historique car ce n'est pas un document final
+  
   // Simulate voice input after 3 seconds
   setTimeout(() => {
     if (isRecording.value) {
       content.value += ' N b\'a fɔ ko...'
       isRecording.value = false
       handleInput()
+      
+      // Ne pas enregistrer dans l'historique car ce n'est pas un document final
     }
   }, 3000)
 }
@@ -157,56 +189,281 @@ const stopVoiceRecording = () => {
 const saveDocument = () => {
   // Save functionality would go here
   console.log('Saving document...')
-}
-
-const insertText = (text: string) => {
-  if (!editorTextarea.value) return
   
-  const textarea = editorTextarea.value
-  const start = textarea.selectionStart
-  const end = textarea.selectionEnd
+  // Mettre à jour le titre du document basé sur le contenu
+  if (content.value.trim()) {
+    const firstLine = content.value.split('\n')[0].trim()
+    if (firstLine && firstLine.length > 0) {
+      documentTitle.value = firstLine.substring(0, 30) + (firstLine.length > 30 ? '...' : '')
+    }
+  }
   
-  const newContent = content.value.substring(0, start) + text + content.value.substring(end)
-  content.value = newContent
-  
-  nextTick(() => {
-    textarea.focus()
-    textarea.setSelectionRange(start + text.length, start + text.length)
-    updateCursorPosition()
+  // Enregistrer dans l'historique
+  historyStore.addHistoryItem({
+    type: 'document',
+    page: 'editor',
+    action: documentTitle.value, // Juste le titre du document
+    details: 'Document créé dans l\'éditeur',
+    icon: 'description',
+    documentId: documentId.value,
+    documentTitle: documentTitle.value,
+    documentContent: content.value
   })
 }
 
+const insertText = (text: string) => {
+  if (!editorContent.value) return
+  
+  const selection = window.getSelection()
+  if (selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0)
+    range.deleteContents()
+    range.insertNode(document.createTextNode(text))
+    range.collapse(false)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+  
+  // Update content
+  content.value = editorContent.value.innerHTML
+}
+
 const formatText = (format: string) => {
-  if (!editorTextarea.value) return
+  if (!editorContent.value) return
   
-  const textarea = editorTextarea.value
-  const start = textarea.selectionStart
-  const end = textarea.selectionEnd
-  const selectedText = content.value.substring(start, end)
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) return
   
-  if (selectedText) {
-    let formattedText = selectedText
+  const range = selection.getRangeAt(0)
+  if (range.collapsed) return // No selection
+  
+  // Apply formatting using modern approach
+  const selectedText = range.toString()
+  if (!selectedText) return
+  
+  let formattedText = selectedText
+  
+  switch (format) {
+    case 'bold':
+      formattedText = `<strong>${selectedText}</strong>`
+      break
+    case 'italic':
+      formattedText = `<em>${selectedText}</em>`
+      break
+    case 'underline':
+      formattedText = `<u>${selectedText}</u>`
+      break
+    case 'strikeThrough':
+      formattedText = `<s>${selectedText}</s>`
+      break
+    case 'justifyLeft':
+      formattedText = `<div style="text-align: left;">${selectedText}</div>`
+      break
+    case 'justifyCenter':
+      formattedText = `<div style="text-align: center;">${selectedText}</div>`
+      break
+    case 'justifyRight':
+      formattedText = `<div style="text-align: right;">${selectedText}</div>`
+      break
+    case 'justifyFull':
+      formattedText = `<div style="text-align: justify;">${selectedText}</div>`
+      break
+  }
+  
+  // Replace the selected text with formatted text
+  range.deleteContents()
+  const tempDiv = document.createElement('div')
+  tempDiv.innerHTML = formattedText
+  const fragment = document.createDocumentFragment()
+  while (tempDiv.firstChild) {
+    fragment.appendChild(tempDiv.firstChild)
+  }
+  range.insertNode(fragment)
+  
+  // Update content
+  content.value = editorContent.value.innerHTML
+}
+
+const changeFontFamily = (fontFamily: string) => {
+  if (!editorContent.value) return
+  
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) return
+  
+  const range = selection.getRangeAt(0)
+  if (range.collapsed) return // No selection
+  
+  const selectedText = range.toString()
+  if (!selectedText) return
+  
+  const formattedText = `<span style="font-family: ${fontFamily};">${selectedText}</span>`
+  
+  range.deleteContents()
+  const tempDiv = document.createElement('div')
+  tempDiv.innerHTML = formattedText
+  const fragment = document.createDocumentFragment()
+  while (tempDiv.firstChild) {
+    fragment.appendChild(tempDiv.firstChild)
+  }
+  range.insertNode(fragment)
+  
+  content.value = editorContent.value.innerHTML
+}
+
+const changeFontSize = (fontSize: string) => {
+  if (!editorContent.value) return
+  
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) return
+  
+  const range = selection.getRangeAt(0)
+  if (range.collapsed) return // No selection
+  
+  const selectedText = range.toString()
+  if (!selectedText) return
+  
+  const formattedText = `<span style="font-size: ${fontSize}px;">${selectedText}</span>`
+  
+  range.deleteContents()
+  const tempDiv = document.createElement('div')
+  tempDiv.innerHTML = formattedText
+  const fragment = document.createDocumentFragment()
+  while (tempDiv.firstChild) {
+    fragment.appendChild(tempDiv.firstChild)
+  }
+  range.insertNode(fragment)
+  
+  content.value = editorContent.value.innerHTML
+}
+
+const openColorPicker = (type: string) => {
+  if (!editorContent.value) return
+  
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) return
+  
+  const range = selection.getRangeAt(0)
+  if (range.collapsed) return // No selection
+  
+  const selectedText = range.toString()
+  if (!selectedText) return
+  
+  // Create a temporary color input
+  const colorInput = document.createElement('input')
+  colorInput.type = 'color'
+  colorInput.style.position = 'absolute'
+  colorInput.style.left = '-9999px'
+  document.body.appendChild(colorInput)
+  
+  colorInput.addEventListener('change', (event) => {
+    const target = event.target as HTMLInputElement
+    const color = target.value
     
-    switch (format) {
-      case 'bold':
-        formattedText = `**${selectedText}**`
-        break
-      case 'italic':
-        formattedText = `*${selectedText}*`
-        break
-      case 'underline':
-        formattedText = `_${selectedText}_`
-        break
+    let formattedText = selectedText
+    if (type === 'foreColor') {
+      formattedText = `<span style="color: ${color};">${selectedText}</span>`
+    } else if (type === 'backColor') {
+      formattedText = `<span style="background-color: ${color};">${selectedText}</span>`
     }
     
-    const newContent = content.value.substring(0, start) + formattedText + content.value.substring(end)
-    content.value = newContent
+    range.deleteContents()
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = formattedText
+    const fragment = document.createDocumentFragment()
+    while (tempDiv.firstChild) {
+      fragment.appendChild(tempDiv.firstChild)
+    }
+    range.insertNode(fragment)
     
-    nextTick(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start, start + formattedText.length)
-      updateCursorPosition()
-    })
+    content.value = editorContent.value!.innerHTML
+    document.body.removeChild(colorInput)
+  })
+  
+  colorInput.click()
+}
+
+const insertList = (type: string) => {
+  if (!editorContent.value) return
+  
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) return
+  
+  const range = selection.getRangeAt(0)
+  const selectedText = range.toString()
+  
+  let listHTML = ''
+  if (type === 'ul') {
+    listHTML = '<ul><li>Élément de liste</li></ul>'
+  } else if (type === 'ol') {
+    listHTML = '<ol><li>Élément de liste</li></ol>'
+  }
+  
+  if (selectedText) {
+    // Replace selected text with list
+    range.deleteContents()
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = listHTML
+    const fragment = document.createDocumentFragment()
+    while (tempDiv.firstChild) {
+      fragment.appendChild(tempDiv.firstChild)
+    }
+    range.insertNode(fragment)
+  } else {
+    // Insert list at cursor position
+    const tempDiv = document.createElement('div')
+    tempDiv.innerHTML = listHTML
+    const fragment = document.createDocumentFragment()
+    while (tempDiv.firstChild) {
+      fragment.appendChild(tempDiv.firstChild)
+    }
+    range.insertNode(fragment)
+  }
+  
+  content.value = editorContent.value.innerHTML
+}
+
+const undo = () => {
+  if (historyIndex.value > 0) {
+    historyIndex.value--
+    const previousContent = history.value[historyIndex.value]
+    if (editorContent.value) {
+      editorContent.value.innerHTML = previousContent
+      content.value = previousContent
+    }
+  }
+}
+
+const redo = () => {
+  if (historyIndex.value < history.value.length - 1) {
+    historyIndex.value++
+    const nextContent = history.value[historyIndex.value]
+    if (editorContent.value) {
+      editorContent.value.innerHTML = nextContent
+      content.value = nextContent
+    }
+  }
+}
+
+const newPage = () => {
+  if (editorContent.value) {
+    const pageBreak = '<div style="page-break-before: always; height: 50px; border-top: 2px dashed #ccc; margin: 20px 0;"></div>'
+    editorContent.value.innerHTML += pageBreak
+    content.value = editorContent.value.innerHTML
+    saveToHistory()
+  }
+}
+
+const saveToHistory = () => {
+  const currentContent = editorContent.value?.innerHTML || ''
+  // Remove any content after current index
+  history.value = history.value.slice(0, historyIndex.value + 1)
+  // Add new content
+  history.value.push(currentContent)
+  historyIndex.value = history.value.length - 1
+  // Limit history size
+  if (history.value.length > 50) {
+    history.value.shift()
+    historyIndex.value--
   }
 }
 
@@ -214,6 +471,13 @@ const formatText = (format: string) => {
 defineExpose({
   insertText,
   formatText,
+  changeFontFamily,
+  changeFontSize,
+  openColorPicker,
+  insertList,
+  undo,
+  redo,
+  newPage,
   content: computed(() => content.value),
   wordCount,
   characterCount,
@@ -221,9 +485,11 @@ defineExpose({
 })
 
 // Watch for content changes
-watch(content, () => {
-  handleInput()
-}, { immediate: true })
+watch(content, (newContent) => {
+  if (editorContent.value && editorContent.value.innerHTML !== newContent) {
+    editorContent.value.innerHTML = newContent
+  }
+})
 </script>
 
 <style scoped>
@@ -254,28 +520,57 @@ watch(content, () => {
   flex-direction: column;
 }
 
-.editor-textarea {
+.editor-content {
   flex: 1;
   width: 100%;
   padding: 2rem;
-  border: none;
+  border: 1px solid var(--border-color);
   outline: none;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-family);
   font-size: 1.125rem;
   line-height: 1.8;
-  resize: none;
   overflow-y: auto;
+  min-height: 500px;
 }
 
-.editor-textarea::placeholder {
+.editor-content:empty:before {
+  content: attr(data-placeholder);
   color: var(--text-muted);
+  font-style: italic;
+  pointer-events: none;
+}
+
+.editor-content:focus {
+  background-color: var(--bg-primary);
+}
+
+/* Styles for lists and formatting */
+.editor-content ul,
+.editor-content ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.editor-content li {
+  margin: 0.5rem 0;
+}
+
+.editor-content strong {
+  font-weight: bold;
+}
+
+.editor-content em {
   font-style: italic;
 }
 
-.editor-textarea:focus {
-  background-color: var(--bg-primary);
+.editor-content u {
+  text-decoration: underline;
+}
+
+.editor-content s {
+  text-decoration: line-through;
 }
 
 .cursor-info {
@@ -371,7 +666,7 @@ watch(content, () => {
     font-size: 1.125rem;
   }
   
-  .editor-textarea {
+  .editor-content {
     padding: 1rem;
     font-size: 1rem;
     line-height: 1.6;
